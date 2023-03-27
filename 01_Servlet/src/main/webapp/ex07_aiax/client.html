@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="../resources/js/lib/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+	
+	<div>
+		<div>
+			<input type="text" id="model" placeholder="모델">
+			<input type="text" id="price" placeholder="가격">
+			<button id="btn1">텍스트요청</button>
+		</div>
+		<div id="content1"></div>
+	</div>
+	<script>
+		$('#btn1').on('click', function(){
+			$('#content1').empty(); // 내부 내용 지우기 
+			$.ajax({
+				/* 요청 */
+				type: 'get', 							// post는 주소창에 주렁주렁 안 매달기  // 요청 메소드
+				// ?뒤에 파라미터 붙이기 말고 분리하는 연습 
+				url : '/01_Servlet/TextServlet', 		//프로젝트 이름/ url매핑/ 요청 URl
+				data: 'model=' + $('#model').val() + '&price=' + $('#price').val(), // 요청 파라미터
+				// 비동기 요청하려고 ajax하기 때문에 async 생략 가능 
+				
+				/* 응답 */
+				dataType: 'text',
+				success: (resData)=>{
+					$('#content1').append(resData);
+				},
+				error: (jqXHR)=>{
+					$('#content1').append($('<div>').text('status : ' + jqXHR.status));
+					$('#content1').append($('<div>').text('responseText : ' + jqXHR.responseText));
+				}
+			})
+		})
+	</script>
+	
+	<div>
+		<form id="frm_person">
+			<input type="text" name="name" placeholder="이름">
+			<input type="text" name="age"  placeholder="나이">
+			<input type="button" id="btn2"value="JSON요청" >
+		</form>
+		<div id="content2"></div>
+	</div>
+	<script>
+		$('#btn2').on('click', function(){
+			$('#content2').empty();
+			$.ajax({
+				/* 요청 */
+				type: 'get',
+				url: '/01_Servlet/JSONServlet',
+				data: $('#frm_person').serialize(), // 요청 파라미터 form 내부의 모든 입력 요소(name 속성이 파라미터로 인식된다.)를 보냄
+				/* 응답 */
+				dataType: 'json',
+				success: (resData)=>{ // resData == {"name": "마돈나","age" : 50}
+					$('#content2').append($('<div>').text(resData.name)); 
+					$('#content2').append($('<div>').text(resData.age));
+				},
+				error: (jqXHR)=>{
+					$('#content2').append($('<div>').text(jqXHR.status));
+					$('#content2').append($('<div>').text(jqXHR.responseText));
+				}
+			})
+			
+		})
+	</script>
+	
+	<div>
+		<form id="frm_book">
+			<input type="text" name="title" placeholder="제목">
+			<input type="text" name="author" placeholder="저자">
+			<input type="text" name="price" placeholder="가격">
+			<input type="button" id="btn3" value="XML요청">
+		</form>
+		<div id="content3"></div>
+	</div>
+	<script>
+		$('#btn3').on('click', function(){
+			$('#content3').empty();
+			$.ajax({
+				/* 요청 */
+				type: 'get',
+				url: '/01_Servlet/XMLServlet',
+				data: $('#frm_book').serialize(),
+				
+				/* 응답 */
+				dataType: 'xml',
+				success: (resData)=>{
+					var ul = $('<ul>');
+					ul.append($('<li>').text('제목 : '+ $(resData).find('title').text()));
+					ul.append($('<li>').text('저자 : '+ $(resData).find('author').text()));
+					ul.append($('<li>').text('가격 : '+ $(resData).find('price').text()+ '원'));
+					$('#content3').append(ul);
+				}
+			})
+		})
+	</script>
+</body>
+</html>
