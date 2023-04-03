@@ -6,7 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLDecoder;
-import java.nio.channels.FileLockInterruptionException;
+
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -36,15 +36,20 @@ public class DownloadServlet extends HttpServlet {
 		BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
 		
 		// 다운로드용 응답 헤더 작업
-		response.setHeader("Content-Dispostion", "attachment");
+		response.setHeader("Content-Dispostion", "attachment; filename=" + path.substring(path.lastIndexOf("\\") + 1));
 		response.setHeader("Content-Length", file.length() + "");
 		
 		// 응답 스트림(출력 스트림)
 		BufferedOutputStream out =  new  BufferedOutputStream(response.getOutputStream());
 		
-		
 		// 파일 복사 (in에서 1024바이트 단위로 읽은 다음 out으로 보내기)
-		
+		byte[] b = new byte[1024];
+		int readByte = 0;
+		while((readByte = in.read(b)) != -1 ) {
+			out.write(b, 0, readByte);
+		}
+		out.close();
+		in.close();
 		
 		}
 	

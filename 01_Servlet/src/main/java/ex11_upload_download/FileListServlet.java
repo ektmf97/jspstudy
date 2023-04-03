@@ -1,4 +1,4 @@
-package practice01;
+package ex11_upload_download;
 
 import java.io.File;
 import java.io.IOException;
@@ -33,10 +33,10 @@ public class FileListServlet extends HttpServlet {
 		File[] files = dir.listFiles();
 		
 		// 응답
-		response.setCharacterEncoding("UTF-8");
+		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 		for(File file : files) {
-			out.println("<div>" + file.getName() + "<a href=\"/01_Servlet/DownloadServlet?path="+ URLEncoder.encode(file.getPath(), "UTF-8") +"\">다운로드></a></div>");
+			out.println("<div>" + file.getName() + " <a href=\"/01_Servlet/DownloadServlet?path=" + URLEncoder.encode(file.getPath(), "UTF-8") + "\">다운로드</a></div>");		
 			
 		}
 		out.flush();
